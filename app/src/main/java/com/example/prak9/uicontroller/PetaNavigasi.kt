@@ -8,14 +8,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prak9.uicontroller.route.DestinasiEntry
 import com.example.prak9.uicontroller.route.DestinasiHome
-import com.example.prak9.uicontroller.route.DestinasiDetail
 import com.example.prak9.view.EntrySiswaScreen
 import com.example.prak9.view.HomeScreen
 
 @Composable
 fun DataSiswaApp(
     navController: NavHostController = rememberNavController(),
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     HostNavigasi(navController = navController)
 }
@@ -34,7 +33,7 @@ fun HostNavigasi(
             HomeScreen(
                 navigateToItemEntry = { navController.navigate(DestinasiEntry.route) },
                 navigateToItemUpdate = {
-                    navController.navigate("${DestinasiDetail.route}/${it}")
+                    // Nanti diimplementasikan di commit berikutnya
                 }
             )
         }
