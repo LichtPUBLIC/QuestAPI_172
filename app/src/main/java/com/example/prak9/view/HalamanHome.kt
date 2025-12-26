@@ -84,3 +84,52 @@ fun HomeScreen(
     }
 }
 
+@Composable
+fun HomeBody(
+    statusUiSiswa: StatusUiSiswa,
+    onSiswaClick: (Int) -> Unit,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        when(statusUiSiswa){
+            is StatusUiSiswa.Loading -> LoadingScreen()
+            is StatusUiSiswa.Success -> DaftarSiswa(itemSiswa = statusUiSiswa.siswa,
+                onSiswaClick = {onSiswaClick(it.id)})
+            is StatusUiSiswa.Error -> ErrorScreen(
+                retryAction,
+                modifier = modifier.fillMaxSize()
+            )
+        }
+    }
+}
+
+@Composable
+fun LoadingScreen(
+    modifier: Modifier = Modifier
+){
+    Image(
+        modifier = modifier.size(200.dp),
+        // Ganti dengan file PNG, JPG, atau VectorDrawable yang valid
+        painter = painterResource(id = R.drawable.image),
+        contentDescription = stringResource(R.string.loading))
+}
+
+@Composable
+fun ErrorScreen(retryAction: ()-> Unit, modifier: Modifier = Modifier){
+    Column(
+        modifier= modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = stringResource(R.string.gagal), modifier = Modifier
+            .padding(16.dp))
+        Button(onClick = retryAction) {
+            Text(stringResource(R.string.retry))
+        }
+    }
+}
+
