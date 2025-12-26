@@ -41,16 +41,15 @@ import com.example.prak9.viewmodel.HomeViewModel
 import com.example.prak9.viewmodel.provider.PenyediaViewModel
 import com.example.prak9.viewmodel.StatusUiSiswa
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    //edit 1.1 : tambahkan parameter navigateToItemEntry
     navigateToItemEntry: () -> Unit,
-    //edit 2.4 : tambahkan parameter navigateToItemUpdate
     navigateToItemUpdate: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
-) {
+){
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -63,10 +62,9 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                //edit 1.2 : event onClick
                 onClick = navigateToItemEntry,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
+                modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -86,116 +84,3 @@ fun HomeScreen(
     }
 }
 
-@Composable
-fun HomeBody(
-    statusUiSiswa: StatusUiSiswa,
-    //edit 2.3 : tambahkan parameter onSiswaClick
-    onSiswaClick: (Int) -> Unit,
-    retryAction: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ) {
-        when (statusUiSiswa) {
-            is StatusUiSiswa.Loading -> LoadingScreen()
-            //edit 2.5 : tambahkan event onSiswaClick
-            is StatusUiSiswa.Success -> DaftarSiswa(
-                itemSiswa = statusUiSiswa.siswa,
-                onSiswaClick = { onSiswaClick(it.id) }
-            )
-            is StatusUiSiswa.Error -> ErrorScreen(
-                retryAction,
-                modifier = modifier.fillMaxSize()
-            )
-        }
-    }
-}
-
-@Composable
-fun LoadingScreen(modifier: Modifier = Modifier) {
-    Image(
-        modifier = modifier.size(200.dp),
-        painter = painterResource(R.drawable.img),
-        contentDescription = stringResource(R.string.loading)
-    )
-}
-
-@Composable
-fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.gagal),
-            modifier = Modifier.padding(16.dp)
-        )
-        Button(onClick = retryAction) {
-            Text(stringResource(R.string.retry))
-        }
-    }
-}
-
-@Composable
-fun DaftarSiswa(
-    itemSiswa: List<DataSiswa>,
-    //edit 2.1 : tambahkan parameter onSiswaClick
-    onSiswaClick: (DataSiswa) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(modifier = Modifier) {
-        items(items = itemSiswa, key = { it.id }) { person ->
-            ItemSiswa(
-                siswa = person,
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.padding_small))
-                    //edit 2.2 jadikan itemsiswa menjadi clickable()
-                    .clickable { onSiswaClick(person) }
-            )
-        }
-    }
-}
-
-@Composable
-fun ItemSiswa(
-    siswa: DataSiswa,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_large)),
-            verticalArrangement = Arrangement.spacedBy(
-                dimensionResource(id = R.dimen.padding_small)
-            )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = siswa.nama,
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(Modifier.weight(1f))
-                Icon(
-                    imageVector = Icons.Default.Phone,
-                    contentDescription = null
-                )
-                Text(
-                    text = siswa.telpon,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-            Text(
-                text = siswa.alamat,
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-    }
-}
